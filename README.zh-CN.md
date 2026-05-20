@@ -1,6 +1,6 @@
 # Polymarket Mimic Trading Bot
 
-> 自动跟单 Polymarket 顶级交易者，支持可配置的风险控制以及基于钱包模式的订单路由。
+> 自动化 Polymarket 跟单引擎：基于 Account Abstraction (AA) 代理路由、多钱包并发与动态订单聚合的硬核量化节点。
 
 English version: [README.md](./README.md)
 
@@ -9,48 +9,39 @@ English version: [README.md](./README.md)
 [![Polymarket](https://img.shields.io/badge/Market-Polymarket-6b5cff.svg)](https://polymarket.com/)
 [![MongoDB](https://img.shields.io/badge/Storage-MongoDB-47A248.svg)](https://www.mongodb.com/)
 
-## 为什么使用这个机器人
+## 为什么构建这个系统？
 
-Polymarket Mimic Trading Bot 面向那些希望跟随优秀交易者、但又不想手动追每一笔成交的用户而构建。它尤其适合需要针对不同交易员配置不同跟单策略，并将零散成交聚合成更易执行订单的场景。
+在 Polymarket 高频博弈中，顶级交易员往往通过极小额的碎单（Snipe）不断吃单，盲目 1:1 跟单会导致 Gas 磨损和极高的滑点；此外，Polymarket 新版 API 强制推行基于 Account Abstraction 的 Deposit Wallet 流程，传统 EOA 钱包直接调用会被 `maker address not allowed` 拦截。
 
-- 跟踪一个或多个高收益钱包
-- 支持为不同交易员分别配置跟单参数和风险规则
-- 按你的资金规模和配置限制动态计算下单大小
-- 将较小交易聚合成更容易执行的订单
-- 同时支持 `LEGACY` 钱包和 `DEPOSIT` 钱包流程
-- 将仓位和活动数据持久化到 MongoDB，方便监控与回放
+**Polymarket Mimic Trading Bot** 不仅是一个简单的 API Wrapper，而是一个自带状态持久化、订单聚合器、动态风控引擎，并完整兼容 Polymarket 新版 Relayer 路由的自动化执行节点。
 
-## 一览
+### 核心架构特性
 
-| 功能 | 价值 |
-| --- | --- |
-| 持续监控交易者活动 | 无需整天盯盘 |
-| 为不同交易员自定义策略 | 每个钱包都可以配置独立的跟单比例、限额、滑点和执行行为 |
-| 按你的账户余额重新计算订单规模 | 风险始终与你的账户规模匹配 |
-| 将相近交易聚合成更整洁的批次 | 零散小单会被整理成更容易执行、噪音更少的订单 |
-| 下单前应用滑点和精度保护 | 减少被交易所拒单的情况 |
-| 为新版 Polymarket API 账户支持 deposit wallet 流程 | 避免 `maker address not allowed` 错误 |
+- **订单聚合引擎 (Trade Aggregation)**：在内存中建立时间窗机制（如 5 秒），将同一标的、价格偏差在阈值内的碎单聚合成干净的批次订单，规避限流并提升执行效率。
+- **动态风控与精度裁剪 (Risk & Precision Scaling)**：细粒度的 JSON 策略矩阵，支持按资金比例动态计算下单 Size，自动处理不同标的的精度要求（Tick Size Handling）和严格滑点保护。
+- **底层 AA 代理路由兼容 (Deposit Wallet Flow)**：完整内置 `POLY_1271` 签名协议与 Relayer 交互逻辑。强校验机制确保运行模式、链上合约状态与环境变量严格一致，杜绝资产风险。
+- **状态机与容灾设计 (State & Resilience)**：全链路数据（仓位、订单元数据、执行历史）实时写入 MongoDB，内置指数退避算法（Exponential Backoff）的网络层重试机制。
 
-## 工作原理
+## 核心架构解析
 
 <img alt="screenshot" src="./assets/image.png" />
 
-1. 从 [Polymarket Leaderboard](https://polymarket.com/leaderboard) 或 [Predictfolio](https://predictfolio.com) 选择要跟随的交易者
-2. 通过 Polymarket Data API 监控其交易活动
-3. 根据你的钱包余额和每个交易者的风险参数计算下单规模
-4. 使用支持钱包模式感知的路由和交易所精度校验执行订单
-5. 将结果记录到 MongoDB，包括仓位、余额和执行历史
+1. **持续监听**：通过 Polymarket Data API 持续轮询目标地址的活动流。
+2. **聚合与清洗**：将高频噪音在时间窗内合并，生成易执行的批次订单。
+3. **风控与缩放**：按账户余额和策略矩阵动态计算真实下单规模。
+4. **路由与校验**：根据 `WALLET_MODE` 自动切换底层签名逻辑，通过 Relayer 或原生 RPC 广播订单。
+5. **持久化**：全生命周期状态写入 MongoDB，支持无缝恢复。
 
 ## 快速开始
 
 ### 前置要求
 
 - Node.js v18+
-- MongoDB 数据库，使用 [MongoDB Atlas](https://www.mongodb.com/cloud/atlas/register) 免费层即可
-- 具有 USDC 和 POL/MATIC 作为 gas 的 Polygon 钱包
-- 来自 [Infura](https://infura.io)、[Alchemy](https://www.alchemy.com) 或类似服务商的 Polygon RPC 节点
+- MongoDB 数据库（推荐 [MongoDB Atlas](https://www.mongodb.com/cloud/atlas/register)）
+- 具有 USDC 和 POL/MATIC 作为 Gas 的 Polygon 钱包
+- Polygon RPC 节点（如 Infura, Alchemy 等）
 
-### 安装
+### 极速部署
 
 ```bash
 # 克隆仓库
@@ -60,191 +51,97 @@ cd polymarket-mimic-trading-bot
 # 安装依赖
 npm install
 
-# 创建配置文件
+# 初始化配置
 cp .env.docker.example .env
 
-# 可选：改为运行交互式配置向导
+# （推荐）运行交互式配置向导
 # npm run setup
 
-# 如果你的账户需要 deposit wallet 流程
+# 若账户需要 Deposit Wallet 流程，请运行：
 # npm run setup-deposit-wallet
 
-# 构建并校验
+# 构建与环境自检
 npm run build
 npm run health-check
 
-# 开始交易
+# 启动引擎
 npm start
 ```
 
-## 功能特性
+## 核心配置说明
 
-### 执行能力
+运行环境依赖于 `.env` 文件（参考 [`/.env.docker.example`](./.env.docker.example)）。
 
-- **多交易者支持**：可同时跟随多个钱包
-- **实时执行**：持续轮询交易者活动并快速响应
-- **交易聚合**：将时间和价格相近的小额交易合并成更整洁的可执行批次
-- **价格保护**：在下单前应用滑点上限和与交易所兼容的精度处理
+### 必填环境变量
 
-### 风险控制
+- `USER_ADDRESSES`: 目标监听钱包，多地址逗号分隔。
+- `TRADING_WALLET`: 执行地址（`LEGACY` 下为 EOA/Safe；`DEPOSIT` 下必须为派生出的 Deposit Wallet）。
+- `WALLET_MODE`: 路由模式（`LEGACY` 或 `DEPOSIT`）。
+- `PRIVATE_KEY`: Owner 或 Signer 的私钥。
+- `CLOB_HTTP_URL` / `CLOB_WS_URL`: Polymarket API 接入点。
+- `MONGO_URI`: MongoDB 状态机连接。
+- `RPC_URL` / `USDC_CONTRACT_ADDRESS`: Polygon 网络配置。
 
-- **智能仓位管理**：按你的余额和被跟随交易者的仓位规模进行比例缩放
-- **按交易者单独覆盖参数**：可为每个钱包自定义 `mimicSize`、最大订单金额、最大持仓金额和滑点
-- **钱包模式校验**：启动时如果 `WALLET_MODE`、`TRADING_WALLET` 和 `PRIVATE_KEY` 所对应的运行模式不一致，会直接阻止程序启动
+### 深入：钱包路由模式 (Wallet Modes)
 
-### 运维能力
+#### `LEGACY` 模式
+面向早期的 EOA 或 Safe 多签直接签名调用。引擎会强校验 `TRADING_WALLET` 是否与 `PRIVATE_KEY` 派生的 Signer 一致。
 
-- **MongoDB 集成**：存储仓位、交易和执行元数据
-- **健康检查工具**：启动前校验连接状态与钱包可用性
-- **Deposit Wallet 支持**：处理新版 API 用户所需的 `POLY_1271` / relayer 流程
+#### `DEPOSIT` 模式（新版 API 强制要求）
+当 Polymarket 拦截并提示 `maker address not allowed, please use the deposit wallet flow` 时必须启用。
+1. 配置 `POLY_BUILDER_API_KEY` 等 Relayer 凭证。
+2. 运行 `npm run setup-deposit-wallet` 动态派生 Deposit Wallet，并填入 `TRADING_WALLET`。
+3. 引擎启动时会严格校验该地址的链上合约部署状态。
 
-## 监控方式
+> ⚠️ **安全拦截机制**：若检测到 `WALLET_MODE` 与链上实际情况不符，引擎会在初始化阶段直接抛出 Fatal Error 并阻断运行。
 
-当前实现通过 **Polymarket Data API** 监控交易者活动，并以可配置的时间间隔轮询。这种方式配置简单，同时对大多数跟单场景依然能够提供较快响应。
+### 深入：策略矩阵配置 (Trader Strategies)
 
-## 配置说明
+通过 `TRADER_STRATEGIES` 配置细粒度控制。格式为合法 JSON 字符串：
 
-运行时模板文件为 [`/.env.docker.example`](./.env.docker.example)。
-
-```bash
-cp .env.docker.example .env
+```json
+[
+  {
+    "address": "0xabc...",
+    "mimicSize": 1.0,
+    "maxOrderSizeUSD": 500,
+    "maxPositionSizeUSD": 2000,
+    "tradeAggregationEnabled": true,
+    "tradeAggregationWindowSeconds": 5
+  }
+]
 ```
+默认采用 `PERCENTAGE` 比例跟单算法。
 
-### 模板变量
+## Docker 容器化交付
 
-| 变量 | 说明 | 示例 |
-| --- | --- | --- |
-| `WALLET_MODE` | 交易钱包模式，可选 `LEGACY` 或 `DEPOSIT` | `'LEGACY'` |
-| `TRADING_WALLET` | 运行时使用的交易钱包。在 `LEGACY` 模式下这是你的 EOA/Safe；在 `DEPOSIT` 模式下这里必须是派生出的 deposit wallet。 | `'0x1234...'` |
-| `PRIVATE_KEY` | owner 或 signer 钱包的私钥 | `'abc123...'` |
-| `RELAYER_URL` | 用于 deposit wallet 操作的 Polymarket relayer 地址 | `'https://relayer-v2.polymarket.com/'` |
-| `POLY_BUILDER_API_KEY` | 用于 relayer 和 gasless 钱包操作的 Builder API key | `'...'` |
-| `POLY_BUILDER_API_SECRET` | 用于 relayer 和 gasless 钱包操作的 Builder API secret | `'...'` |
-| `POLY_BUILDER_API_PASSPHRASE` | 用于 relayer 和 gasless 钱包操作的 Builder API passphrase | `'...'` |
-| `POLY_BUILDER_CODE` | 附加到 CLOB 订单中的 Builder code | `'0x...'` |
-| `MONGO_URI` | MongoDB 连接字符串 | `'mongodb://mongodb:27017/polymarket_mimictrading'` |
-| `RPC_URL` | Polygon HTTPS RPC 节点地址 | `'https://polygon-mainnet.infura.io/v3/your-key'` |
-| `CLOB_HTTP_URL` | Polymarket HTTP 接口地址 | `'https://clob.polymarket.com/'` |
-| `CLOB_WS_URL` | 当前运行配置使用的 Polymarket 用户 WebSocket 地址 | `'wss://ws-subscriptions-clob.polymarket.com/ws/user'` |
-| `USDC_CONTRACT_ADDRESS` | Polymarket 使用的 USDC 合约地址 | `'0xC011a7E12a19f7B1f670d46F03B03f3342E82DFB'` |
-| `USER_ADDRESSES` | 要跟单的交易者地址，多个地址用逗号分隔 | `'0xabc...,0xdef...'` |
-| `TRADER_STRATEGIES` | JSON 数组，可为每个交易者单独配置 `mimicSize`、最大订单金额、最大持仓金额、滑点和聚合参数 | `'[{"address":"0xabc...","mimicSize":1}]'` |
-| `RETRY_LIMIT` | 失败操作的重试次数 | `'5'` |
-| `RETRY_DELAY_MS` | 订单重试之间的延迟（毫秒） | `'200'` |
-| `REQUEST_TIMEOUT_MS` | HTTP 请求超时时间（毫秒） | `'1000'` |
-| `NETWORK_RETRY_LIMIT` | 网络层失败的重试次数 | `'10'` |
-
-### 必填运行时变量
-
-机器人启动时必须提供以下变量：
-
-- `USER_ADDRESSES`
-- `TRADING_WALLET`
-- `WALLET_MODE`
-- `PRIVATE_KEY`
-- `CLOB_HTTP_URL`
-- `CLOB_WS_URL`
-- `MONGO_URI`
-- `RPC_URL`
-- `USDC_CONTRACT_ADDRESS`
-
-### 钱包模式
-
-#### `LEGACY`
-
-当你的账户通过普通钱包路径直接交易时，使用该模式。
-
-- `TRADING_WALLET` 应为你的实际交易 EOA 或 Safe
-- 模板中的默认值是 `WALLET_MODE='LEGACY'`
-- 如果 `TRADING_WALLET` 是 EOA，启动时会要求它与 `PRIVATE_KEY` 推导出的 signer 地址一致
-
-#### `DEPOSIT`
-
-当 Polymarket 要求使用 deposit wallet 流程时，使用该模式。
-
-- `TRADING_WALLET` 必须是由 `PRIVATE_KEY` 派生出的 deposit wallet
-- 启动时会检查该地址是否与派生结果一致
-- 启动时还会检查该钱包是否已经以合约形式部署到链上
-
-> 如果钱包模式与链上实际情况不匹配，机器人会立即退出，而不是继续以错误的钱包类型提交订单。
-
-### Deposit Wallet 流程
-
-- 如果 Polymarket 返回 `maker address not allowed, please use the deposit wallet flow`，说明你的账户必须通过 deposit wallet 交易
-- 填写 `POLY_BUILDER_API_KEY`、`POLY_BUILDER_API_SECRET`、`POLY_BUILDER_API_PASSPHRASE` 和 `POLY_BUILDER_CODE`
-- 运行 `npm run setup-deposit-wallet`
-- 将派生出的 deposit wallet 地址写入 `.env` 中的 `TRADING_WALLET`
-- 设置 `WALLET_MODE='DEPOSIT'`
-- 如果你还想同时提交授权批次，可再次运行 `npm run setup-deposit-wallet -- --approve`
-
-### 策略说明
-
-- `TRADER_STRATEGIES` 必须是放在带引号字符串中的合法 JSON
-- `USER_ADDRESSES` 和 `TRADER_STRATEGIES` 中的交易者地址应使用小写 `0x...` 格式
-- 默认策略是 `PERCENTAGE`，因此如果你使用全局默认行为，只需要配置 `MIMIC_SIZE`
-- 当前模板示例还展示了 `tradeAggregationEnabled` 和 `tradeAggregationWindowSeconds` 等可选字段
-- 交互式配置向导也可以直接生成可用的 `.env` 文件
-
-## 如何寻找交易者
-
-1. 打开 [Polymarket Leaderboard](https://polymarket.com/leaderboard)
-2. 寻找 P&L 为正、胜率高于 55% 且近期仍活跃的交易者
-3. 使用 [Predictfolio](https://predictfolio.com) 进一步验证其统计表现
-4. 将选中的钱包地址加入 `USER_ADDRESSES`
-
-## Docker 部署
-
-当前的 Docker Compose 配置会启动两个服务：
-
-- `bot` - Node.js 交易机器人
-- `mongodb` - 本地 MongoDB 7 容器
-
-`docker-compose.yml` 会从 `.env` 读取环境变量，因此最简单的使用方式是：
+提供开箱即用的 `docker-compose.yml`，一键拉起 Bot 与 MongoDB 实例，实现纯粹的 Local Daemon 运行。
 
 ```bash
-# 根据当前模板创建运行配置
+# 初始化环境
 cp .env.docker.example .env
+# 建议在 .env 中设置：MONGO_URI='mongodb://mongodb:27017/polymarket_mimictrading'
 
-# 启动 bot + MongoDB
+# 启动服务
 docker-compose up -d
 
-# 查看日志
+# 查看引擎日志
 docker-compose logs -f bot
 ```
 
-### Docker 中的 MongoDB URI
+## 寻找 Alpha (Smart Money)
 
-如果你希望 bot 容器直接使用 Compose 中定义的 MongoDB 服务，请设置：
-
-```bash
-MONGO_URI='mongodb://mongodb:27017/polymarket_mimictrading'
-```
-
-之所以可行，是因为两个服务运行在同一个 Compose 网络中，而 MongoDB 服务名就是 `mongodb`。
-
-### 常用命令
-
-```bash
-# 代码修改后重新构建
-docker-compose up -d --build
-
-# 查看 MongoDB 日志
-docker-compose logs -f mongodb
-
-# 停止所有服务
-docker-compose down
-```
+1. 分析 [Polymarket Leaderboard](https://polymarket.com/leaderboard)。
+2. 筛选 P&L 为正、胜率 >55% 且近期活跃的“聪明钱”。
+3. 借助 [Predictfolio](https://predictfolio.com) 进行深度数据交叉验证。
+4. 填入 `USER_ADDRESSES`，让引擎接管执行。
 
 ## 许可证
-
 ISC License - 详见 [LICENSE](LICENSE) 文件。
 
 ## 致谢
-
-- 基于 [Polymarket CLOB Client](https://github.com/Polymarket/clob-client) 构建
-- 使用 [Predictfolio](https://predictfolio.com) 进行交易者分析
-- 由 Polygon 网络提供支持
+- 底层依赖 [Polymarket CLOB Client](https://github.com/Polymarket/clob-client)
+- 数据分析支持 [Predictfolio](https://predictfolio.com)
 
 ---
-
-**免责声明：** 本软件仅供学习、研究和教育用途，不构成任何投资建议、金融建议或交易推荐。预测市场、加密货币及相关资产交易存在较高风险，包括但不限于本金全部损失。请务必自行研究、谨慎评估自身财务状况与风险承受能力，并在完全理解相关风险的前提下自行决定是否使用本机器人。因使用本软件而产生的任何资金损失或相关损害，开发者概不负责。
+**免责声明：** 本软件仅供极客研究、代码学习和教育用途，不构成任何财务或投资建议。预测市场具有极高风险，引擎自动化执行可能导致本金全部损失。开发者对任何资金损失概不负责，请在完全掌握源码逻辑的前提下谨慎部署。
