@@ -114,6 +114,31 @@ Fine-grained control is achieved via `TRADER_STRATEGIES`, which must be a valid 
 ```
 The default strategy utilizes a `PERCENTAGE` based proportional scaling algorithm.
 
+### 📖 Deep Dive: Trading & Execution Mechanics
+
+To ensure the quantitative execution is both efficient and highly secure, the bot employs two distinctly different risk-control pipelines for buying and selling. Here is a breakdown of the core mechanics:
+
+#### 🟢 Buy Order Mechanics
+When the engine detects a "Smart Money" buy operation, it triggers a rigorous sequence of conditional checks:
+1. **Base Size Calculation**: Computes the target token amount based on your configured `mimicSize` percentage: `Trader Tokens * (mimicSize / 100)`.
+2. **Multi-Threshold Scaling**:
+   - **Max Order Size**: If the calculated token value exceeds `maxOrderSizeUSD`, it is strictly capped at this limit.
+   - **Max Position Size**: The engine evaluates your current position cost plus the incoming order cost. If this exceeds `maxPositionSizeUSD`, the order is trimmed to fit the remaining allowance. If the allowance translates to less than 5 tokens, the order is rejected.
+   - **Balance Protection**: Checks your current USDC balance and caps the order at `99%` of your available funds to prevent `INSUFFICIENT_BALANCE` errors due to minor price fluctuations or fees.
+3. **Slippage & Limit Order Execution**: It takes the trader's execution price and adds the configured `buySlippageThreshold`. A strict **Limit Order** is then generated. This ensures that even during extreme market volatility, your entry cost will never exceed your safety threshold.
+
+#### 🔴 Sell Order Mechanics
+Selling usually indicates that "Smart Money" is taking profits or cutting losses. Therefore, execution priority and liquidity capturing are paramount. The engine adopts a "Clear & Market Snipe" strategy:
+1. **Clear Pending Buy Orders**: Before executing a sell, the engine actively cancels all your pending BUY orders for that specific asset to free up capital and avoid conflicting trades.
+2. **Dynamic Proportional Selling**:
+   - The system compares the trader's sell size against their historical position size to calculate the true **Sell Percentage**.
+   - It then multiplies your *real CLOB token balance* by this percentage to determine your sell amount. If the trader dumps their entire position (or if their historical position cannot be tracked), the engine will trigger a **100% full liquidation** of your holdings.
+3. **FOK (Fill-or-Kill) Execution**:
+   - The engine fetches the real-time Order Book to locate the highest buyer (Best Bid).
+   - It subtracts your configured `sellSlippageThreshold` to establish a safety floor price.
+   - The order is then broadcasted using the **FOK (Fill-or-Kill)** order type. FOK ensures the order is either fully filled immediately or entirely canceled, preventing fragmented partial fills from hanging on the order book.
+   - In case of liquidity shifts causing FOK rejections or network issues, the engine triggers an exponential backoff retry mechanism (up to `RETRY_LIMIT`), aggressively chasing liquidity until the position is cleared.
+
 ## Docker Containerization
 
 We provide an out-of-the-box `docker-compose.yml` to spin up both the Bot and a MongoDB instance with a single command, achieving a pure Local Daemon execution.
