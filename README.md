@@ -1,13 +1,14 @@
-# Polymarket Mimic Trading Bot
-
-> Mirror top Polymarket traders with automated execution, configurable risk controls, and wallet-mode aware order routing.
-
-中文版本: [README.zh-CN.md](./README.zh-CN.md)
-
-[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](LICENSE)
-[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
-[![Polymarket](https://img.shields.io/badge/Market-Polymarket-6b5cff.svg)](https://polymarket.com/)
-[![MongoDB](https://img.shields.io/badge/Storage-MongoDB-47A248.svg)](https://www.mongodb.com/)
+<div align="center">
+  <h1>Polymarket Mimic Trading Bot</h1>
+  <p><strong>Mirror top Polymarket traders with automated execution, configurable risk controls, and wallet-mode aware order routing.</strong></p>
+  <p><a href="./README.zh-CN.md">中文版本</a></p>
+  <p>
+    <a href="LICENSE"><img src="https://img.shields.io/badge/License-ISC-blue.svg" alt="License: ISC" /></a>
+    <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg" alt="Node.js Version" /></a>
+    <a href="https://polymarket.com/"><img src="https://img.shields.io/badge/Market-Polymarket-6b5cff.svg" alt="Polymarket" /></a>
+    <a href="https://www.mongodb.com/"><img src="https://img.shields.io/badge/Storage-MongoDB-47A248.svg" alt="MongoDB" /></a>
+  </p>
+</div>
 
 ## Why This Bot
 
