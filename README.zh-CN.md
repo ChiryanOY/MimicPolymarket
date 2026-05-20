@@ -246,20 +246,4 @@ ISC License - 详见 [LICENSE](LICENSE) 文件。
 
 ---
 
-## 高级版本
-
-**🚀 Version 2 Available:** 一个带有 **RTDS（实时数据流）** 监控能力的高级版本现已作为私有仓库提供。<br />
-Version 2 提供了更快的交易检测方式，支持几乎即时的交易复制、更低延迟和更低 API 负载。在高级版本中，跟单体验表现非常出色。
-
-<img width="680" height="313" alt="image (19)" src="https://github.com/user-attachments/assets/d868f9f2-a1dd-4bfe-a76e-d8cbdfbd8497" />
-
-## 交易工具
-
-我还开发了一个基于 **Rust** 构建的 Polymarket 交易机器人。
-
-<img width="1917" height="942" alt="image (21)" src="https://github.com/user-attachments/assets/08a5c962-7f8b-4097-98b6-7a457daa37c9" />
-https://www.youtube.com/watch?v=4f6jHT4-DQs
-
-**免责声明：** 本软件仅用于学习和教育目的。交易存在亏损风险，开发者不对使用本机器人所产生的任何财务损失负责。
-
-**支持：** 如有问题，请通过 Telegram 联系 [@ChiryanOY](https://t.me/ChiryanOY) 或通过 Twitter 联系 [@ChiryanOY](https://x.com/ChiryanOY)
+**免责声明：** 本软件仅供学习、研究和教育用途，不构成任何投资建议、金融建议或交易推荐。预测市场、加密货币及相关资产交易存在较高风险，包括但不限于本金全部损失。请务必自行研究、谨慎评估自身财务状况与风险承受能力，并在完全理解相关风险的前提下自行决定是否使用本机器人。因使用本软件而产生的任何资金损失或相关损害，开发者概不负责。

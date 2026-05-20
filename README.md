@@ -244,20 +244,4 @@ ISC License - See [LICENSE](LICENSE) file for details.
 
 ---
 
-## Advanced version
-
-**🚀 Version 2 Available:** An advanced version with **RTDS (Real-Time Data Stream)** monitoring is now available as a private repository. <br />
-Version 2 features the fastest trade detection method with near-instantaneous trade replication, lower latency, and reduced API load. Mimic trading works excellently in the advanced version.
-
-<img width="680" height="313" alt="image (19)" src="https://github.com/user-attachments/assets/d868f9f2-a1dd-4bfe-a76e-d8cbdfbd8497" />
-
-## Trading tool
-
-I've also developed a trading bot for Polymarket built with **Rust**.
-
-<img width="1917" height="942" alt="image (21)" src="https://github.com/user-attachments/assets/08a5c962-7f8b-4097-98b6-7a457daa37c9" />
-https://www.youtube.com/watch?v=4f6jHT4-DQs
-
-**Disclaimer:** This software is for educational purposes only. Trading involves risk of loss. The developers are not responsible for any financial losses incurred while using this bot.
-
-**Support:** For questions or issues, contact via Telegram: [@ChiryanOY](https://t.me/ChiryanOY) | Twitter: [@ChiryanOY](https://x.com/ChiryanOY)
+**Disclaimer:** This software is provided for educational and research purposes only and does not constitute investment advice, financial advice, or any recommendation to trade. Investing and trading in prediction markets, cryptocurrencies, and related assets involve substantial risk, including the possible loss of all capital. You should conduct your own research, evaluate your financial situation carefully, and use this bot entirely at your own risk. The developers are not responsible for any financial losses or damages arising from the use of this software.
