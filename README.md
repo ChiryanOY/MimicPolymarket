@@ -12,9 +12,10 @@
 
 ## Why This Bot
 
-The Polymarket Mimic Trading Bot is built for traders who want to follow strong performers without manually chasing every fill.
+The Polymarket Mimic Trading Bot is built for traders who want to follow strong performers without manually chasing every fill. It is especially useful when you want to run different mimic strategies per trader and turn fragmented fills into cleaner aggregated executions.
 
 - Tracks one or many profitable wallets
+- Lets you define different mimic settings and risk rules for each trader
 - Sizes orders relative to your capital and your configured limits
 - Aggregates small trades into more executable orders
 - Supports both `LEGACY` wallets and `DEPOSIT` wallet flow
@@ -25,7 +26,9 @@ The Polymarket Mimic Trading Bot is built for traders who want to follow strong 
 | What It Does | Why It Matters |
 | --- | --- |
 | Monitor trader activity continuously | You do not need to watch the market all day |
+| Customize strategy per trader | Each wallet can use its own mimic size, limits, slippage, and behavior |
 | Recalculate order size against your own balance | Risk stays proportional to your account |
+| Aggregate nearby trades into cleaner batches | Small fills become more executable orders with less noise |
 | Apply slippage and precision guards before sending orders | Fewer exchange-side rejections |
 | Support deposit wallet flow for newer Polymarket API accounts | Avoid `maker address not allowed` failures |
 
