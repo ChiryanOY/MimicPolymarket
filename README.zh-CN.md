@@ -77,8 +77,6 @@ npm run health-check
 npm start
 ```
 
-> 详细上手说明： [Getting Started Guide](./docs/GETTING_STARTED.md)
-
 ## 功能特性
 
 ### 执行能力
