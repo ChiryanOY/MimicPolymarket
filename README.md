@@ -162,6 +162,16 @@ docker-compose logs -f bot
 3. Cross-validate deep stats using [Predictfolio](https://predictfolio.com).
 4. Inject the selected addresses into `USER_ADDRESSES` and let the engine take over.
 
+## Star History
+
+<a href="https://star-history.com/#ChiryanOY/MimicPolymarket&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=ChiryanOY/MimicPolymarket&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=ChiryanOY/MimicPolymarket&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=ChiryanOY/MimicPolymarket&type=Date" />
+  </picture>
+</a>
+
 ## License
 ISC License - See [LICENSE](LICENSE) for details.
 

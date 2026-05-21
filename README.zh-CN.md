@@ -161,6 +161,16 @@ docker-compose logs -f bot
 3. 借助 [Predictfolio](https://predictfolio.com) 进行深度数据交叉验证。
 4. 填入 `USER_ADDRESSES`，让引擎接管执行。
 
+## Star History
+
+<a href="https://star-history.com/#ChiryanOY/MimicPolymarket&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=ChiryanOY/MimicPolymarket&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=ChiryanOY/MimicPolymarket&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=ChiryanOY/MimicPolymarket&type=Date" />
+  </picture>
+</a>
+
 ## 许可证
 ISC License - 详见 [LICENSE](LICENSE) 文件。
 
