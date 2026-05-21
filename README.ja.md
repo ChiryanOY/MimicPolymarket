@@ -1,6 +1,6 @@
 <div align="center">
   <h1>Polymarket Mimic Trading Bot</h1> 
-  <p><code>[ SYSTEM_STATUS: ONLINE ]</code> <code>[ LATENCY: OPTIMIZED ]</code></p>
+  <p><code>[ CONCURRENCY: MULTI-WALLET ]</code> <code>[ ENGINE: ORDER-AGGREGATION ]</code></p>
   <p><strong>産業グレードの定量的実行ノード</strong></p>
   <p><em>Account Abstraction (AA) プロキシルーティング、マルチウォレット並行処理、および動的注文集約のために設計されています。</em></p>
   <p><em><a href="README.md">English</a> | <a href="README.zh-CN.md">中文</a> | <a href="README.ja.md">日本語</a> | <a href="README.ko.md">한국어</a> | <a href="README.es.md">Español</a> | <a href="README.ru.md">Русский</a></em></p>

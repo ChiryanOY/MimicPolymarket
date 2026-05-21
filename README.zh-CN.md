@@ -1,6 +1,6 @@
 <div align="center">
   <h1>Polymarket Mimic Trading Bot</h1>
-  <p><code>[ SYSTEM_STATUS: ONLINE ]</code> <code>[ LATENCY: OPTIMIZED ]</code></p>
+  <p><code>[ CONCURRENCY: MULTI-WALLET ]</code> <code>[ ENGINE: ORDER-AGGREGATION ]</code></p>
   <p><strong>工业级量化执行节点</strong></p>
   <p><em>基于 Account Abstraction (AA) 代理路由、多钱包并发与动态订单聚合的硬核架构。</em></p>
   <p><em><a href="README.md">English</a> | <a href="README.zh-CN.md">中文</a> | <a href="README.ja.md">日本語</a> | <a href="README.ko.md">한국어</a> | <a href="README.es.md">Español</a> | <a href="README.ru.md">Русский</a></em></p>

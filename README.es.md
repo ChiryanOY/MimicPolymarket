@@ -1,6 +1,6 @@
 <div align="center">
   <h1>Polymarket Mimic Trading Bot</h1>
-  <p><code>[ SYSTEM_STATUS: ONLINE ]</code> <code>[ LATENCY: OPTIMIZED ]</code></p>
+  <p><code>[ CONCURRENCY: MULTI-WALLET ]</code> <code>[ ENGINE: ORDER-AGGREGATION ]</code></p>
   <p><strong>Nodo de Ejecución Cuantitativa de Grado Industrial</strong></p>
   <p><em>Diseñado para el enrutamiento proxy de Account Abstraction (AA), concurrencia de múltiples billeteras y agregación dinámica de órdenes.</em></p>
   <p><em><a href="README.md">English</a> | <a href="README.zh-CN.md">中文</a> | <a href="README.ja.md">日本語</a> | <a href="README.ko.md">한국어</a> | <a href="README.es.md">Español</a> | <a href="README.ru.md">Русский</a></em></p>
