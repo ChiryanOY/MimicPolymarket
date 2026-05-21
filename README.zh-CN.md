@@ -45,8 +45,8 @@ English version: [README.md](./README.md)
 
 ```bash
 # 克隆仓库
-git clone https://github.com/ChiryanOY/polymarket-mimic-trading-bot.git
-cd polymarket-mimic-trading-bot
+git clone https://github.com/ChiryanOY/MimicPolymarket.git
+cd MimicPolymarket
 
 # 安装依赖
 npm install

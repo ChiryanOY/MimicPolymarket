@@ -3,7 +3,7 @@ services:
         build:
             context: .
             dockerfile: Dockerfile
-        container_name: polymarket-mimic-trading-bot
+        container_name: MimicPolymarket
         restart: unless-stopped
         env_file:
             - .env

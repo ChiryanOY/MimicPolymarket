@@ -46,8 +46,8 @@ In the high-frequency battlefield of Polymarket, top traders ("Smart Money") oft
 
 ```bash
 # Clone the repository
-git clone https://github.com/ChiryanOY/polymarket-mimic-trading-bot.git
-cd polymarket-mimic-trading-bot
+git clone https://github.com/ChiryanOY/MimicPolymarket.git
+cd MimicPolymarket
 
 # Install dependencies
 npm install
