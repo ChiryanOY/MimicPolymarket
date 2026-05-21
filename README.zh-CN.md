@@ -175,7 +175,7 @@ docker-compose logs -f bot
 ISC License - 详见 [LICENSE](LICENSE) 文件。
 
 ## 致谢
-- 底层依赖 [Polymarket CLOB Client](https://github.com/Polymarket/clob-client)
+- 底层依赖 [Polymarket CLOB Client V2](https://github.com/Polymarket/clob-client-v2)
 - 数据分析支持 [Predictfolio](https://predictfolio.com)
 
 ---

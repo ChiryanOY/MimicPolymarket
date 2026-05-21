@@ -176,7 +176,7 @@ docker-compose logs -f bot
 ISC License - See [LICENSE](LICENSE) for details.
 
 ## Acknowledgments
-- Core dependencies built on [Polymarket CLOB Client](https://github.com/Polymarket/clob-client).
+- Core dependencies built on [Polymarket CLOB Client V2](https://github.com/Polymarket/clob-client-v2).
 - Data analytics powered by [Predictfolio](https://predictfolio.com).
 
 ---
