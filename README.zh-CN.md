@@ -2,7 +2,7 @@
 
 > 自动化 Polymarket 跟单引擎：基于 Account Abstraction (AA) 代理路由、多钱包并发与动态订单聚合的硬核量化节点。
 
-English version: [README.md](./README.md)
+*[English](README.md) | [中文](README.zh-CN.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Español](README.es.md)*
 
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](LICENSE)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
