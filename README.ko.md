@@ -1,7 +1,9 @@
 <div align="center">
   <h1>Polymarket Mimic Trading Bot</h1>
-  <p><strong>하드코어 정량적 실행 노드: 계정 추상화(AA) 프록시 라우팅, 다중 지갑 동시성 및 동적 주문 집계 기능을 갖추고 있습니다.</strong></p>
-  <p><em><a href="README.md">English</a> | <a href="README.zh-CN.md">中文</a> | <a href="README.ja.md">日本語</a> | <a href="README.ko.md">한국어</a> | <a href="README.es.md">Español</a></em></p>
+  <p><code>[ SYSTEM_STATUS: ONLINE ]</code> <code>[ LATENCY: OPTIMIZED ]</code></p>
+  <p><strong>산업용 등급 정량적 실행 노드</strong></p>
+  <p><em>계정 추상화(AA) 프록시 라우팅, 다중 지갑 동시성 및 동적 주문 집계를 위해 설계되었습니다.</em></p>
+  <p><em><a href="README.md">English</a> | <a href="README.zh-CN.md">中文</a> | <a href="README.ja.md">日本語</a> | <a href="README.ko.md">한국어</a> | <a href="README.es.md">Español</a> | <a href="README.ru.md">Русский</a></em></p>
   <p>
     <a href="LICENSE"><img src="https://img.shields.io/badge/License-ISC-blue.svg" alt="License: ISC" /></a>
     <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg" alt="Node.js Version" /></a>

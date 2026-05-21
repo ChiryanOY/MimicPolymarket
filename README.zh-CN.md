@@ -1,13 +1,16 @@
-# Polymarket Mimic Trading Bot
-
-> 自动化 Polymarket 跟单引擎：基于 Account Abstraction (AA) 代理路由、多钱包并发与动态订单聚合的硬核量化节点。
-
-*[English](README.md) | [中文](README.zh-CN.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Español](README.es.md)*
-
-[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](LICENSE)
-[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
-[![Polymarket](https://img.shields.io/badge/Market-Polymarket-6b5cff.svg)](https://polymarket.com/)
-[![MongoDB](https://img.shields.io/badge/Storage-MongoDB-47A248.svg)](https://www.mongodb.com/)
+<div align="center">
+  <h1>Polymarket Mimic Trading Bot</h1>
+  <p><code>[ SYSTEM_STATUS: ONLINE ]</code> <code>[ LATENCY: OPTIMIZED ]</code></p>
+  <p><strong>工业级量化执行节点</strong></p>
+  <p><em>基于 Account Abstraction (AA) 代理路由、多钱包并发与动态订单聚合的硬核架构。</em></p>
+  <p><em><a href="README.md">English</a> | <a href="README.zh-CN.md">中文</a> | <a href="README.ja.md">日本語</a> | <a href="README.ko.md">한국어</a> | <a href="README.es.md">Español</a> | <a href="README.ru.md">Русский</a></em></p>
+  <p>
+    <a href="LICENSE"><img src="https://img.shields.io/badge/License-ISC-blue.svg" alt="License: ISC" /></a>
+    <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg" alt="Node.js Version" /></a>
+    <a href="https://polymarket.com/"><img src="https://img.shields.io/badge/Market-Polymarket-6b5cff.svg" alt="Polymarket" /></a>
+    <a href="https://www.mongodb.com/"><img src="https://img.shields.io/badge/Storage-MongoDB-47A248.svg" alt="MongoDB" /></a>
+  </p>
+</div>
 
 ## 为什么构建这个系统？
 

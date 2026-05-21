@@ -1,7 +1,9 @@
 <div align="center">
   <h1>Polymarket Mimic Trading Bot</h1>
-  <p><strong>A hardcore quantitative execution node: featuring Account Abstraction (AA) proxy routing, multi-wallet concurrency, and dynamic order aggregation.</strong></p>
-  <p><em><a href="README.md">English</a> | <a href="README.zh-CN.md">中文</a> | <a href="README.ja.md">日本語</a> | <a href="README.ko.md">한국어</a> | <a href="README.es.md">Español</a></em></p>
+  <p><code>[ SYSTEM_STATUS: ONLINE ]</code> <code>[ LATENCY: OPTIMIZED ]</code></p>
+  <p><strong>Industrial-Grade Quantitative Execution Node</strong></p>
+  <p><em>Engineered for Account Abstraction (AA) proxy routing, multi-wallet concurrency, and dynamic order aggregation.</em></p>
+  <p><em><a href="README.md">English</a> | <a href="README.zh-CN.md">中文</a> | <a href="README.ja.md">日本語</a> | <a href="README.ko.md">한국어</a> | <a href="README.es.md">Español</a> | <a href="README.ru.md">Русский</a></em></p>
   <p>
     <a href="LICENSE"><img src="https://img.shields.io/badge/License-ISC-blue.svg" alt="License: ISC" /></a>
     <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg" alt="Node.js Version" /></a>

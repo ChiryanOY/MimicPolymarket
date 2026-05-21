@@ -1,7 +1,9 @@
 <div align="center">
-  <h1>Polymarket Mimic Trading Bot</h1>
-  <p><strong>ハードコアな定量的実行ノード：Account Abstraction (AA) プロキシルーティング、マルチウォレット並行処理、および動的注文集約機能を搭載。</strong></p>
-  <p><em><a href="README.md">English</a> | <a href="README.zh-CN.md">中文</a> | <a href="README.ja.md">日本語</a> | <a href="README.ko.md">한국어</a> | <a href="README.es.md">Español</a></em></p>
+  <h1>Polymarket Mimic Trading Bot</h1> 
+  <p><code>[ SYSTEM_STATUS: ONLINE ]</code> <code>[ LATENCY: OPTIMIZED ]</code></p>
+  <p><strong>産業グレードの定量的実行ノード</strong></p>
+  <p><em>Account Abstraction (AA) プロキシルーティング、マルチウォレット並行処理、および動的注文集約のために設計されています。</em></p>
+  <p><em><a href="README.md">English</a> | <a href="README.zh-CN.md">中文</a> | <a href="README.ja.md">日本語</a> | <a href="README.ko.md">한국어</a> | <a href="README.es.md">Español</a> | <a href="README.ru.md">Русский</a></em></p>
   <p>
     <a href="LICENSE"><img src="https://img.shields.io/badge/License-ISC-blue.svg" alt="License: ISC" /></a>
     <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg" alt="Node.js Version" /></a>
