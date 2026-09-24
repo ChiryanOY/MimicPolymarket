@@ -11,12 +11,14 @@ const isValidEthereumAddress = (address: string): boolean => {
     return /^0x[a-fA-F0-9]{40}$/.test(address);
 };
 
+const getLeaderAddressesInput = (): string | undefined =>
+    process.env.LEADER_ADDRESSES || process.env.USER_ADDRESSES;
+
 /**
  * Validate required environment variables
  */
 const validateRequiredEnv = (): void => {
     const required = [
-        'USER_ADDRESSES',
         'TRADING_WALLET',
         'WALLET_MODE',
         'PRIVATE_KEY',
@@ -27,6 +29,9 @@ const validateRequiredEnv = (): void => {
     ];
 
     const missing: string[] = [];
+    if (!getLeaderAddressesInput()) {
+        missing.push('LEADER_ADDRESSES');
+    }
     for (const key of required) {
         if (!process.env[key]) {
             missing.push(key);
@@ -78,13 +83,6 @@ const validateAddresses = (): void => {
  * Validate numeric configuration values
  */
 const validateNumericConfig = (): void => {
-    const fetchInterval = parseFloat(process.env.FETCH_INTERVAL || '1');
-    if (isNaN(fetchInterval) || fetchInterval <= 0) {
-        throw new Error(
-            `Invalid FETCH_INTERVAL: ${process.env.FETCH_INTERVAL}. Must be a positive number.`
-        );
-    }
-
     const retryLimit = parseInt(process.env.RETRY_LIMIT || '3', 10);
     if (isNaN(retryLimit) || retryLimit < 1 || retryLimit > 10) {
         throw new Error(
@@ -104,6 +102,21 @@ const validateNumericConfig = (): void => {
         throw new Error(
             `Invalid NETWORK_RETRY_LIMIT: ${process.env.NETWORK_RETRY_LIMIT}. Must be between 1 and 10.`
         );
+    }
+
+    const chainConfirmations = parseInt(process.env.CHAIN_CONFIRMATIONS || '2', 10);
+    if (isNaN(chainConfirmations) || chainConfirmations < 0 || chainConfirmations > 100) {
+        throw new Error('Invalid CHAIN_CONFIRMATIONS. Must be between 0 and 100.');
+    }
+
+    const backfillInterval = parseInt(process.env.ONCHAIN_BACKFILL_INTERVAL_MS || '15000', 10);
+    if (isNaN(backfillInterval) || backfillInterval < 1000) {
+        throw new Error('Invalid ONCHAIN_BACKFILL_INTERVAL_MS. Must be at least 1000ms.');
+    }
+
+    const backfillChunk = parseInt(process.env.ONCHAIN_BACKFILL_CHUNK_BLOCKS || '500', 10);
+    if (isNaN(backfillChunk) || backfillChunk < 1 || backfillChunk > 5000) {
+        throw new Error('Invalid ONCHAIN_BACKFILL_CHUNK_BLOCKS. Must be between 1 and 5000.');
     }
 };
 
@@ -144,6 +157,14 @@ const validateUrls = (): void => {
         throw new Error(`Invalid RPC_URL: ${process.env.RPC_URL}. Must be a valid HTTP/HTTPS URL.`);
     }
 
+    if (
+        process.env.POLYGON_WSS_URL &&
+        !process.env.POLYGON_WSS_URL.startsWith('ws://') &&
+        !process.env.POLYGON_WSS_URL.startsWith('wss://')
+    ) {
+        throw new Error('Invalid POLYGON_WSS_URL. Must be a valid WS/WSS URL.');
+    }
+
     if (process.env.MONGO_URI && !process.env.MONGO_URI.startsWith('mongodb')) {
         console.error('\n❌ Invalid MONGO_URI\n');
         console.error(`Current value: ${process.env.MONGO_URI}`);
@@ -168,7 +189,8 @@ validateWalletMode();
 validateNumericConfig();
 validateUrls();
 
-// Parse USER_ADDRESSES: supports both comma-separated string and JSON array
+// Parse LEADER_ADDRESSES: supports both comma-separated string and JSON array.
+// USER_ADDRESSES remains a one-release compatibility alias.
 const parseUserAddresses = (input: string): string[] => {
     const trimmed = input.trim();
     // Check if it's JSON array format
@@ -182,7 +204,7 @@ const parseUserAddresses = (input: string): string[] => {
                 // Validate each address
                 for (const addr of addresses) {
                     if (!isValidEthereumAddress(addr)) {
-                        console.error('\n❌ Invalid Trader Address in USER_ADDRESSES\n');
+                        console.error('\n❌ Invalid Trader Address in LEADER_ADDRESSES\n');
                         console.error(`Invalid address: ${addr}`);
                         console.error(
                             'Expected format: 0x followed by 40 hexadecimal characters\n'
@@ -193,9 +215,9 @@ const parseUserAddresses = (input: string): string[] => {
                         );
                         console.error('   • Predictfolio: https://predictfolio.com\n');
                         console.error(
-                            "Example: USER_ADDRESSES='0x7c3db723f1d4d8cb9c550095203b686cb11e5c6b'\n"
+                            "Example: LEADER_ADDRESSES='0x7c3db723f1d4d8cb9c550095203b686cb11e5c6b'\n"
                         );
-                        throw new Error(`Invalid Ethereum address in USER_ADDRESSES: ${addr}`);
+                        throw new Error(`Invalid Ethereum address in LEADER_ADDRESSES: ${addr}`);
                     }
                 }
                 return addresses;
@@ -205,7 +227,7 @@ const parseUserAddresses = (input: string): string[] => {
                 throw e;
             }
             throw new Error(
-                `Invalid JSON format for USER_ADDRESSES: ${e instanceof Error ? e.message : String(e)}`
+                `Invalid JSON format for LEADER_ADDRESSES: ${e instanceof Error ? e.message : String(e)}`
             );
         }
     }
@@ -217,14 +239,14 @@ const parseUserAddresses = (input: string): string[] => {
     // Validate each address
     for (const addr of addresses) {
         if (!isValidEthereumAddress(addr)) {
-            console.error('\n❌ Invalid Trader Address in USER_ADDRESSES\n');
+            console.error('\n❌ Invalid Trader Address in LEADER_ADDRESSES\n');
             console.error(`Invalid address: ${addr}`);
             console.error('Expected format: 0x followed by 40 hexadecimal characters\n');
             console.error('💡 Where to find trader addresses:');
             console.error('   • Polymarket Leaderboard: https://polymarket.com/leaderboard');
             console.error('   • Predictfolio: https://predictfolio.com\n');
-            console.error("Example: USER_ADDRESSES='0x7c3db723f1d4d8cb9c550095203b686cb11e5c6b'\n");
-            throw new Error(`Invalid Ethereum address in USER_ADDRESSES: ${addr}`);
+            console.error("Example: LEADER_ADDRESSES='0x7c3db723f1d4d8cb9c550095203b686cb11e5c6b'\n");
+            throw new Error(`Invalid Ethereum address in LEADER_ADDRESSES: ${addr}`);
         }
     }
     return addresses;
@@ -315,14 +337,29 @@ const parseClobBuilderConfig = (): { builderCode: string } | null => {
 
 const resolveWalletMode = (): WalletMode => process.env.WALLET_MODE!.toUpperCase() as WalletMode;
 
+const leaderAddresses = parseUserAddresses(getLeaderAddressesInput() as string);
+
 export const ENV = {
-    USER_ADDRESSES: parseUserAddresses(process.env.USER_ADDRESSES as string),
+    LEADER_ADDRESSES: leaderAddresses,
+    // Deprecated compatibility alias for integrations importing the old field.
+    USER_ADDRESSES: leaderAddresses,
     WALLET_MODE: resolveWalletMode(),
     TRADING_WALLET: process.env.TRADING_WALLET as string,
     PRIVATE_KEY: process.env.PRIVATE_KEY as string,
     CLOB_HTTP_URL: process.env.CLOB_HTTP_URL as string,
     RELAYER_URL: process.env.RELAYER_URL || 'https://relayer-v2.polymarket.com/',
-    FETCH_INTERVAL: parseFloat(process.env.FETCH_INTERVAL || '1'),
+    POLYGON_WSS_URL:
+        process.env.POLYGON_WSS_URL || 'wss://polygon-bor-rpc.publicnode.com',
+    CHAIN_CONFIRMATIONS: parseInt(process.env.CHAIN_CONFIRMATIONS || '2', 10),
+    ONCHAIN_BACKFILL_INTERVAL_MS: parseInt(
+        process.env.ONCHAIN_BACKFILL_INTERVAL_MS || '15000',
+        10
+    ),
+    ONCHAIN_BACKFILL_CHUNK_BLOCKS: parseInt(
+        process.env.ONCHAIN_BACKFILL_CHUNK_BLOCKS || '500',
+        10
+    ),
+    ONCHAIN_RECONNECT_DELAY_MS: parseInt(process.env.ONCHAIN_RECONNECT_DELAY_MS || '5000', 10),
     RETRY_LIMIT: parseInt(process.env.RETRY_LIMIT || '3', 10),
     // New mimic strategy configuration
     MIMIC_STRATEGY_CONFIG: parseMimicStrategy(),

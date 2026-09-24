@@ -29,7 +29,7 @@ Polymarketの高頻度な戦場において、トップトレーダー（「ス�
 
 <img alt="screenshot" src="./assets/image.png" />
 
-1. **継続的モニタリング**: Polymarket Data APIを介してターゲットアドレスのアクティビティストリームをポーリングします。
+1. **オンチェーン監視**: Polygon上のLeaderの確定済み`OrderFilled`を購読し、HTTP RPCで欠落区間を補完します。
 2. **集約とクレンジング**: 時間枠内の高頻度ノイズを実行可能なバッチ注文にマージします。
 3. **リスクコントロールとスケーリング**: アカウント残高と戦略マトリックスに基づいて、実際の注文サイズを動的に計算します。
 4. **ルーティングと検証**: `WALLET_MODE` に基づいて基盤となる署名ロジックを自動的に切り替え、RelayerまたはネイティブRPCを介して注文をブロードキャストします。
@@ -77,7 +77,7 @@ npm start
 
 ### 必須の環境変数
 
-- `USER_ADDRESSES`: 監視するターゲットウォレット（カンマ区切り）。
+- `LEADER_ADDRESSES`: オンチェーン監視するウォレット（カンマ区切りまたはJSON配列）。
 - `TRADING_WALLET`: 実行アドレス（`LEGACY` の場合はEOA/Safe、`DEPOSIT` の場合は派生したDeposit Wallet）。
 - `WALLET_MODE`: ルーティングモード（`LEGACY` または `DEPOSIT`）。
 - `PRIVATE_KEY`: OwnerまたはSignerの秘密鍵。
@@ -162,7 +162,7 @@ docker-compose logs -f bot
 1. [Polymarket Leaderboard](https://polymarket.com/leaderboard) を分析します。
 2. P&Lがプラス、勝率が55%以上、および最近のアクティビティがあるトレーダーをフィルタリングします。
 3. [Predictfolio](https://predictfolio.com) を使用して、詳細な統計情報を相互検証します。
-4. 選択したアドレスを `USER_ADDRESSES` に挿入し、エンジンに引き継ぎます。
+4. 選択したアドレスを `LEADER_ADDRESSES` に挿入し、エンジンに引き継ぎます。
 
 ## Star History
 

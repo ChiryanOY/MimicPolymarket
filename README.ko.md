@@ -29,7 +29,7 @@ Polymarket의 고빈도 전장에서 최고의 트레이더("스마트 머니")�
 
 <img alt="screenshot" src="./assets/image.png" />
 
-1. **지속적 모니터링**: Polymarket Data API를 통해 대상 주소의 활동 스트림을 폴링합니다.
+1. **온체인 모니터링**: Polygon에서 Leader의 확정된 `OrderFilled`를 구독하고 HTTP RPC로 누락 구간을 복구합니다.
 2. **집계 및 정리**: 시간 창 내의 고빈도 노이즈를 실행 가능한 일괄 주문으로 병합합니다.
 3. **위험 제어 및 확장**: 계정 잔액 및 전략 매트릭스에 따라 실제 주문 크기를 동적으로 계산합니다.
 4. **라우팅 및 검증**: `WALLET_MODE`에 따라 기본 서명 논리를 자동으로 전환하여 Relayer 또는 기본 RPC를 통해 주문을 브로드캐스트합니다.
@@ -77,7 +77,7 @@ npm start
 
 ### 필수 환경 변수
 
-- `USER_ADDRESSES`: 모니터링할 대상 지갑(쉼표로 구분).
+- `LEADER_ADDRESSES`: 온체인 모니터링 대상 지갑(쉼표 또는 JSON 배열).
 - `TRADING_WALLET`: 실행 주소(`LEGACY`의 경우 EOA/Safe, `DEPOSIT`의 경우 파생된 Deposit Wallet).
 - `WALLET_MODE`: 라우팅 모드(`LEGACY` 또는 `DEPOSIT`).
 - `PRIVATE_KEY`: Owner 또는 Signer의 개인 키.
@@ -162,7 +162,7 @@ docker-compose logs -f bot
 1. [Polymarket Leaderboard](https://polymarket.com/leaderboard)를 분석합니다.
 2. P&L이 양수이고 승률이 55% 이상이며 최근 활동이 있는 트레이더를 필터링합니다.
 3. [Predictfolio](https://predictfolio.com)를 사용하여 심층 통계를 교차 검증합니다.
-4. 선택한 주소를 `USER_ADDRESSES`에 주입하고 엔진이 인계받도록 합니다.
+4. 선택한 주소를 `LEADER_ADDRESSES`에 주입하고 엔진이 인계받도록 합니다.
 
 ## Star History
 

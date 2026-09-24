@@ -29,7 +29,7 @@ En el campo de batalla de alta frecuencia de Polymarket, los mejores traders ("S
 
 <img alt="screenshot" src="./assets/image.png" />
 
-1. **Monitoreo continuo**: Consulta el flujo de actividad de las direcciones objetivo a través de la Polymarket Data API.
+1. **Monitoreo on-chain**: Suscribe los eventos confirmados `OrderFilled` de los líderes en Polygon y repara huecos mediante HTTP RPC.
 2. **Agregación y limpieza**: Fusiona el ruido de alta frecuencia dentro de una ventana de tiempo en órdenes por lotes ejecutables.
 3. **Control de riesgos y escalado**: Calcula el tamaño real de la orden dinámicamente en función del saldo de la cuenta y la matriz de estrategia.
 4. **Enrutamiento y validación**: Cambia la lógica de firma subyacente automáticamente en función de `WALLET_MODE`, transmitiendo órdenes a través del Relayer o RPC nativo.
@@ -77,7 +77,7 @@ El entorno de ejecución se basa en el archivo `.env` (consulte [`/.env.docker.e
 
 ### Variables de entorno requeridas
 
-- `USER_ADDRESSES`: Billeteras objetivo para monitorear (separadas por comas).
+- `LEADER_ADDRESSES`: Billeteras objetivo para monitorear on-chain (separadas por comas o matriz JSON).
 - `TRADING_WALLET`: La dirección de ejecución (EOA/Safe para `LEGACY`; Deposit Wallet derivado para `DEPOSIT`).
 - `WALLET_MODE`: Modo de enrutamiento (`LEGACY` o `DEPOSIT`).
 - `PRIVATE_KEY`: Clave privada del Propietario o Firmante.
@@ -162,7 +162,7 @@ docker-compose logs -f bot
 1. Analice el [Polymarket Leaderboard](https://polymarket.com/leaderboard).
 2. Filtre por traders con P&L positivo, tasa de ganancia >55% y actividad reciente.
 3. Verifique de forma cruzada estadísticas profundas usando [Predictfolio](https://predictfolio.com).
-4. Inyecte las direcciones seleccionadas en `USER_ADDRESSES` y deje que el motor se haga cargo.
+4. Inyecte las direcciones seleccionadas en `LEADER_ADDRESSES` y deje que el motor se haga cargo.
 
 ## Star History
 

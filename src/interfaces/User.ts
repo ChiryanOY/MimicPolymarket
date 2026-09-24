@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 export interface UserActivityInterface {
     _id: mongoose.Types.ObjectId;
     proxyWallet: string;
+    eventId?: string;
     timestamp: number;
     conditionId: string;
     type: string;
@@ -27,6 +28,10 @@ export interface UserActivityInterface {
     botExcutedTime: number;
     buyStatus?: string;
     sellStatus?: string;
+    exchangeVersion?: string;
+    exchangeType?: string;
+    blockNumber?: number;
+    logIndex?: number;
 }
 
 export interface UserPositionInterface {

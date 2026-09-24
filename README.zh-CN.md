@@ -23,13 +23,14 @@
 - **订单聚合引擎 (Trade Aggregation)**：在内存中建立时间窗机制（如 5 秒），将同一标的、价格偏差在阈值内的碎单聚合成干净的批次订单，规避限流并提升执行效率。
 - **动态风控与精度裁剪 (Risk & Precision Scaling)**：细粒度的 JSON 策略矩阵，支持按资金比例动态计算下单 Size，自动处理不同标的的精度要求（Tick Size Handling）和严格滑点保护。
 - **底层 AA 代理路由兼容 (Deposit Wallet Flow)**：完整内置 `POLY_1271` 签名协议与 Relayer 交互逻辑。强校验机制确保运行模式、链上合约状态与环境变量严格一致，杜绝资产风险。
-- **状态机与容灾设计 (State & Resilience)**：全链路数据（仓位、订单元数据、执行历史）实时写入 MongoDB，内置指数退避算法（Exponential Backoff）的网络层重试机制。
+- **链上信号引擎 (On-chain Signals)**：通过 Polygon WSS 监听已确认的 `OrderFilled`，不再轮询 Data API 获取 Leader 交易；HTTP RPC 持久化游标会在断线或重启后自动补齐缺口。
+- **状态机与容灾设计 (State & Resilience)**：全链路数据（信号、订单元数据、执行历史）实时写入 MongoDB，内置指数退避算法（Exponential Backoff）的网络层重试机制。
 
 ## 核心架构解析
 
 <img alt="screenshot" src="./assets/image.png" />
 
-1. **持续监听**：通过 Polymarket Data API 持续轮询目标地址的活动流。
+1. **链上监听**：订阅目标 Leader 的 Polygon `OrderFilled`，等待确认，并通过 HTTP RPC 补扫遗漏区块。
 2. **聚合与清洗**：将高频噪音在时间窗内合并，生成易执行的批次订单。
 3. **风控与缩放**：按账户余额和策略矩阵动态计算真实下单规模。
 4. **路由与校验**：根据 `WALLET_MODE` 自动切换底层签名逻辑，通过 Relayer 或原生 RPC 广播订单。
@@ -77,13 +78,19 @@ npm start
 
 ### 必填环境变量
 
-- `USER_ADDRESSES`: 目标监听钱包，多地址逗号分隔。
+- `LEADER_ADDRESSES`: 链上监听的目标钱包，支持逗号分隔或 JSON 数组；`USER_ADDRESSES` 仅作为临时兼容别名。
 - `TRADING_WALLET`: 执行地址（`LEGACY` 下为 EOA/Safe；`DEPOSIT` 下必须为派生出的 Deposit Wallet）。
 - `WALLET_MODE`: 路由模式（`LEGACY` 或 `DEPOSIT`）。
 - `PRIVATE_KEY`: Owner 或 Signer 的私钥。
 - `CLOB_HTTP_URL` / `CLOB_WS_URL`: Polymarket API 接入点。
 - `MONGO_URI`: MongoDB 状态机连接。
-- `RPC_URL` / `USDC_CONTRACT_ADDRESS`: Polygon 网络配置。
+- `RPC_URL` / `POLYGON_WSS_URL` / `USDC_CONTRACT_ADDRESS`: Polygon HTTP RPC、WebSocket RPC 与抵押资产配置。
+- `CHAIN_CONFIRMATIONS`: 信号进入执行前所需确认数，默认 `2`。
+- `ONCHAIN_BACKFILL_INTERVAL_MS`: HTTP RPC 确认区块补扫间隔，默认 `15000` 毫秒。
+
+v2 首次启动只记录当前已确认区块，不回放历史 Leader 交易；之后重启会从 MongoDB 中持久化的游标继续。V3 Combo Exchange 成交目前会被识别并跳过，在具备原子 Combo 执行能力前不会自动复制。
+
+信号投递、去重与断线恢复语义详见 [链上 Leader 信号说明](docs/on-chain-listener.md)。
 
 ### 深入：钱包路由模式 (Wallet Modes)
 
@@ -162,7 +169,7 @@ docker-compose logs -f bot
 1. 分析 [Polymarket Leaderboard](https://polymarket.com/leaderboard)。
 2. 筛选 P&L 为正、胜率 >55% 且近期活跃的“聪明钱”。
 3. 借助 [Predictfolio](https://predictfolio.com) 进行深度数据交叉验证。
-4. 填入 `USER_ADDRESSES`，让引擎接管执行。
+4. 填入 `LEADER_ADDRESSES`，让引擎接管执行。
 
 ## Star History
 

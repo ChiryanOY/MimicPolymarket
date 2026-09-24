@@ -17,14 +17,14 @@ This document describes the current code behavior, not a theoretical design.
 
 The system uses two main services:
 
-- `tradeMonitor`: discovers new trader activity and stores it in MongoDB
+- `onChainListener`: discovers confirmed leader fills and stores them in MongoDB
 - `tradeExecutor`: reads pending records, optionally aggregates them, and executes orders
 
 The entry point is `src/index.ts`, which starts both services after environment validation, database connection, health checks, CLOB client initialization, and local state initialization.
 
 High-level flow:
 
-1. `tradeMonitor` polls Polymarket Data API for trader `TRADE` activity.
+1. `onChainListener` receives leader `OrderFilled` logs from Polygon WSS and repairs gaps with confirmed HTTP-RPC scans.
 2. New trades are written into per-trader activity collections.
 3. `tradeExecutor` reads records where `bot=false` and `botExcutedTime=0`.
 4. The executor decides whether the trade should be aggregated or executed immediately.
@@ -33,7 +33,7 @@ High-level flow:
 
 Relevant code:
 
-- `src/services/tradeMonitor.ts`
+- `src/services/onChainListener.ts`
 - `src/services/tradeExecutor.ts`
 - `src/utils/postOrder.ts`
 
@@ -59,7 +59,7 @@ Relevant code:
 
 - `src/interfaces/User.ts`
 - `src/services/tradeExecutorModules/persistence.ts`
-- `src/services/tradeMonitor.ts`
+- `src/services/onChainListener.ts`
 
 ## 4. Configuration Sources
 

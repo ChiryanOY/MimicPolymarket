@@ -23,7 +23,7 @@ It lives inside `tradeExecutor` as an intermediate layer between:
 
 Actual flow:
 
-1. `tradeMonitor` discovers trader activity and stores new `TRADE` rows.
+1. `onChainListener` discovers confirmed leader fills and stores new `TRADE` rows.
 2. `tradeExecutor` reads pending rows.
 3. It decides, per trader, whether aggregation is enabled.
 4. If enabled, the trade enters `TradeAggregationManager`.
@@ -33,7 +33,7 @@ Actual flow:
 
 Relevant code:
 
-- `src/services/tradeMonitor.ts`
+- `src/services/onChainListener.ts`
 - `src/services/tradeExecutor.ts`
 - `src/services/tradeExecutorModules/aggregation.ts`
 - `src/services/tradeExecutorModules/persistence.ts`

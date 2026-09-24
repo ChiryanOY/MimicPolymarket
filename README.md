@@ -23,13 +23,14 @@ In the high-frequency battlefield of Polymarket, top traders ("Smart Money") oft
 - **Trade Aggregation Engine**: Establishes an in-memory time-window (e.g., 5 seconds) to aggregate fragmented snipes on the same market/outcome within a price threshold into clean batch orders, avoiding rate limits and boosting execution efficiency.
 - **Dynamic Risk & Precision Scaling**: A fine-grained JSON strategy matrix that dynamically calculates execution size based on your capital ratio, automatically handles exchange-specific Tick Size requirements, and enforces strict slippage caps.
 - **AA Proxy Routing (Deposit Wallet Flow)**: Natively implements the `POLY_1271` signature protocol and Relayer interaction logic. Strict validation mechanisms ensure the runtime mode, on-chain contract state, and environment variables are perfectly aligned to prevent asset loss.
-- **State Machine & Resilience**: The entire lifecycle (positions, order metadata, execution history) is persisted in real-time to MongoDB. Built-in network retry mechanisms utilize Exponential Backoff algorithms to handle RPC jitters.
+- **On-chain Signal Engine**: Watches confirmed `OrderFilled` events over Polygon WSS instead of polling the Data API for leader activity. A persisted HTTP-RPC cursor repairs WSS gaps after reconnects or restarts.
+- **State Machine & Resilience**: The entire lifecycle (signals, order metadata, execution history) is persisted in real-time to MongoDB. Built-in network retry mechanisms utilize exponential backoff to handle RPC jitter.
 
 ## Architecture Overview
 
 <img alt="screenshot" src="./assets/image.png" />
 
-1. **Continuous Monitoring**: Polls the target addresses' activity stream via the Polymarket Data API.
+1. **On-chain Monitoring**: Subscribes to the configured leaders' Polygon `OrderFilled` events, waits for confirmations, and repairs missed ranges through HTTP RPC.
 2. **Aggregation & Cleansing**: Merges high-frequency noise within a time window into executable batch orders.
 3. **Risk Control & Scaling**: Calculates the true order size dynamically based on account balance and the strategy matrix.
 4. **Routing & Validation**: Switches underlying signature logic automatically based on `WALLET_MODE`, broadcasting orders via Relayer or native RPC.
@@ -77,13 +78,19 @@ The runtime environment relies on the `.env` file (see [`/.env.docker.example`](
 
 ### Required Environment Variables
 
-- `USER_ADDRESSES`: Target wallets to monitor (comma-separated).
+- `LEADER_ADDRESSES`: Target wallets to monitor on-chain (comma-separated or JSON array). `USER_ADDRESSES` is accepted temporarily as a deprecated alias.
 - `TRADING_WALLET`: The execution address (EOA/Safe for `LEGACY`; derived Deposit Wallet for `DEPOSIT`).
 - `WALLET_MODE`: Routing mode (`LEGACY` or `DEPOSIT`).
 - `PRIVATE_KEY`: Private key of the Owner or Signer.
 - `CLOB_HTTP_URL` / `CLOB_WS_URL`: Polymarket API endpoints.
 - `MONGO_URI`: MongoDB state machine connection string.
-- `RPC_URL` / `USDC_CONTRACT_ADDRESS`: Polygon network configuration.
+- `RPC_URL` / `POLYGON_WSS_URL` / `USDC_CONTRACT_ADDRESS`: Polygon HTTP RPC, WebSocket RPC, and collateral configuration.
+- `CHAIN_CONFIRMATIONS`: Confirmations required before a signal enters execution (default `2`).
+- `ONCHAIN_BACKFILL_INTERVAL_MS`: Interval for confirmed HTTP-RPC gap repair (default `15000`).
+
+The first v2 startup records the current confirmed Polygon head and does not replay historical leader trades. Later restarts resume from the persisted MongoDB cursor. V3 combo-exchange fills are recognized and intentionally skipped until combo-aware atomic execution is available.
+
+See [On-chain leader signals](docs/on-chain-listener.md) for delivery, deduplication, and recovery semantics.
 
 ### Deep Dive: Wallet Routing Modes
 
@@ -162,7 +169,7 @@ docker-compose logs -f bot
 1. Analyze the [Polymarket Leaderboard](https://polymarket.com/leaderboard).
 2. Filter for traders with positive P&L, >55% win rate, and recent activity.
 3. Cross-validate deep stats using [Predictfolio](https://predictfolio.com).
-4. Inject the selected addresses into `USER_ADDRESSES` and let the engine take over.
+4. Inject the selected addresses into `LEADER_ADDRESSES` and let the engine take over.
 
 ## Star History
 

@@ -26,12 +26,13 @@ const rl = readline.createInterface({
 });
 
 interface Config {
-    USER_ADDRESSES: string;
+    LEADER_ADDRESSES: string;
     TRADING_WALLET: string;
     WALLET_MODE: string;
     PRIVATE_KEY: string;
     MONGO_URI: string;
     RPC_URL: string;
+    POLYGON_WSS_URL: string;
     CLOB_HTTP_URL: string;
     CLOB_WS_URL: string;
     USDC_CONTRACT_ADDRESS: string;
@@ -43,7 +44,6 @@ interface Config {
     MIMIC_SIZE?: string;
     MAX_ORDER_SIZE_USD?: string;
     MIN_ORDER_SIZE_USD?: string;
-    FETCH_INTERVAL?: string;
     RETRY_LIMIT?: string;
 }
 
@@ -286,7 +286,7 @@ function generateEnvFile(config: Config): string {
 # ================================================================
 # TRADERS TO MIMIC
 # ================================================================
-USER_ADDRESSES='${config.USER_ADDRESSES}'
+LEADER_ADDRESSES='${config.LEADER_ADDRESSES}'
 
 # ================================================================
 # YOUR WALLET
@@ -304,6 +304,10 @@ MONGO_URI='${config.MONGO_URI}'
 # BLOCKCHAIN RPC
 # ================================================================
 RPC_URL='${config.RPC_URL}'
+POLYGON_WSS_URL='${config.POLYGON_WSS_URL}'
+CHAIN_CONFIRMATIONS='2'
+ONCHAIN_BACKFILL_INTERVAL_MS='15000'
+ONCHAIN_BACKFILL_CHUNK_BLOCKS='500'
 
 # ================================================================
 # POLYMARKET ENDPOINTS (DO NOT CHANGE)
@@ -341,7 +345,6 @@ MIN_ORDER_SIZE_USD='${config.MIN_ORDER_SIZE_USD}'
 # ================================================================
 # BOT BEHAVIOR
 # ================================================================
-FETCH_INTERVAL='${config.FETCH_INTERVAL || '1'}'
 RETRY_LIMIT='${config.RETRY_LIMIT || '3'}'
 
 
@@ -369,12 +372,13 @@ async function main() {
 
         // Build config object
         const config: Config = {
-            USER_ADDRESSES: userAddresses,
+            LEADER_ADDRESSES: userAddresses,
             TRADING_WALLET: wallet,
             WALLET_MODE: 'LEGACY',
             PRIVATE_KEY: privateKey,
             MONGO_URI: mongoUri,
             RPC_URL: rpcUrl,
+            POLYGON_WSS_URL: 'wss://polygon-bor-rpc.publicnode.com',
             CLOB_HTTP_URL: 'https://clob.polymarket.com/',
             CLOB_WS_URL: 'wss://ws-subscriptions-clob.polymarket.com/ws',
             USDC_CONTRACT_ADDRESS: '0xC011a7E12a19f7B1f670d46F03B03f3342E82DFB',

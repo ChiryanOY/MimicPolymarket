@@ -2,13 +2,13 @@ import connectDB, { closeDB } from './config/db';
 import { ENV } from './config/env';
 import createClobClient from './utils/createClobClient';
 import tradeExecutor, { stopTradeExecutor } from './services/tradeExecutor';
-import tradeMonitor, { stopTradeMonitor } from './services/tradeMonitor';
+import { startOnChainListener, stopOnChainListener } from './services/onChainListener';
 import Logger from './utils/logger';
 import { performHealthCheck, logHealthCheck } from './utils/healthCheck';
 import { myStateManager } from './services/myStateManager';
 // import test from './test/test';
 
-const USER_ADDRESSES = ENV.USER_ADDRESSES;
+const LEADER_ADDRESSES = ENV.LEADER_ADDRESSES;
 const TRADING_WALLET = ENV.TRADING_WALLET;
 
 // Graceful shutdown handler
@@ -26,7 +26,7 @@ const gracefulShutdown = async (signal: string) => {
 
     try {
         // Stop services
-        stopTradeMonitor();
+        await stopOnChainListener();
         stopTradeExecutor();
 
         // Give services time to finish current operations
@@ -77,7 +77,7 @@ export const main = async () => {
         console.log(`   Run health check: ${colors.cyan}npm run health-check${colors.reset}\n`);
 
         await connectDB();
-        Logger.startup(USER_ADDRESSES, TRADING_WALLET);
+        Logger.startup(LEADER_ADDRESSES, TRADING_WALLET);
 
         // Perform initial health check
         Logger.info('Performing initial health check...');
@@ -96,12 +96,12 @@ export const main = async () => {
         await myStateManager.init(clobClient);
         Logger.success('MyStateManager initialized');
 
-        Logger.separator();
-        Logger.info('Starting trade monitor...');
-        tradeMonitor();
-
         Logger.info('Starting trade executor...');
-        tradeExecutor(clobClient);
+        void tradeExecutor(clobClient);
+
+        Logger.separator();
+        Logger.info('Starting on-chain leader listener...');
+        await startOnChainListener();
 
         // test(clobClient);
     } catch (error) {

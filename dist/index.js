@@ -41,12 +41,12 @@ const db_1 = __importStar(require("./config/db"));
 const env_1 = require("./config/env");
 const createClobClient_1 = __importDefault(require("./utils/createClobClient"));
 const tradeExecutor_1 = __importStar(require("./services/tradeExecutor"));
-const tradeMonitor_1 = __importStar(require("./services/tradeMonitor"));
+const onChainListener_1 = require("./services/onChainListener");
 const logger_1 = __importDefault(require("./utils/logger"));
 const healthCheck_1 = require("./utils/healthCheck");
 const myStateManager_1 = require("./services/myStateManager");
 // import test from './test/test';
-const USER_ADDRESSES = env_1.ENV.USER_ADDRESSES;
+const LEADER_ADDRESSES = env_1.ENV.LEADER_ADDRESSES;
 const TRADING_WALLET = env_1.ENV.TRADING_WALLET;
 // Graceful shutdown handler
 let isShuttingDown = false;
@@ -60,7 +60,7 @@ const gracefulShutdown = async (signal) => {
     logger_1.default.info(`Received ${signal}, initiating graceful shutdown...`);
     try {
         // Stop services
-        (0, tradeMonitor_1.stopTradeMonitor)();
+        await (0, onChainListener_1.stopOnChainListener)();
         (0, tradeExecutor_1.stopTradeExecutor)();
         // Give services time to finish current operations
         logger_1.default.info('Waiting for services to finish current operations...');
@@ -103,7 +103,7 @@ const main = async () => {
         console.log(`   Read the guide: ${colors.cyan}README.md${colors.reset}`);
         console.log(`   Run health check: ${colors.cyan}npm run health-check${colors.reset}\n`);
         await (0, db_1.default)();
-        logger_1.default.startup(USER_ADDRESSES, TRADING_WALLET);
+        logger_1.default.startup(LEADER_ADDRESSES, TRADING_WALLET);
         // Perform initial health check
         logger_1.default.info('Performing initial health check...');
         const healthResult = await (0, healthCheck_1.performHealthCheck)();
@@ -117,11 +117,11 @@ const main = async () => {
         logger_1.default.info('Initializing MyStateManager with API polling...');
         await myStateManager_1.myStateManager.init(clobClient);
         logger_1.default.success('MyStateManager initialized');
-        logger_1.default.separator();
-        logger_1.default.info('Starting trade monitor...');
-        (0, tradeMonitor_1.default)();
         logger_1.default.info('Starting trade executor...');
-        (0, tradeExecutor_1.default)(clobClient);
+        void (0, tradeExecutor_1.default)(clobClient);
+        logger_1.default.separator();
+        logger_1.default.info('Starting on-chain leader listener...');
+        await (0, onChainListener_1.startOnChainListener)();
         // test(clobClient);
     }
     catch (error) {

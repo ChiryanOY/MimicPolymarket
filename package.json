@@ -1,6 +1,6 @@
 {
     "name": "mimic_trading_bot",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "main": "index.js",
     "scripts": {
         "help": "ts-node src/scripts/help.ts",
@@ -24,7 +24,7 @@
     "author": "ChiryanOY",
     "license": "ISC",
     "type": "commonjs",
-    "description": "",
+    "description": "Event-driven Polymarket leader copy-trading bot",
     "devDependencies": {
         "@eslint/js": "^9.19.0",
         "@types/jest": "^29.5.14",

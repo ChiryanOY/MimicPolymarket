@@ -10,10 +10,10 @@ const aggregation_1 = require("./tradeExecutorModules/aggregation");
 const execution_1 = require("./tradeExecutorModules/execution");
 const persistence_1 = require("./tradeExecutorModules/persistence");
 const queue_1 = require("./tradeExecutorModules/queue");
-const USER_ADDRESSES = env_1.ENV.USER_ADDRESSES;
+const LEADER_ADDRESSES = env_1.ENV.LEADER_ADDRESSES;
 const MIMIC_STRATEGY_CONFIG = env_1.ENV.MIMIC_STRATEGY_CONFIG;
 const TRADER_STRATEGIES_MAP = env_1.ENV.TRADER_STRATEGIES_MAP;
-const userActivityModels = (0, persistence_1.createUserActivityModels)(USER_ADDRESSES);
+const userActivityModels = (0, persistence_1.createUserActivityModels)(LEADER_ADDRESSES);
 const aggregationManager = new aggregation_1.TradeAggregationManager(MIMIC_STRATEGY_CONFIG, TRADER_STRATEGIES_MAP);
 const traderTaskQueue = new queue_1.TraderTaskQueue();
 const groupByTrader = (items) => {
@@ -78,7 +78,7 @@ const stopTradeExecutor = () => {
 };
 exports.stopTradeExecutor = stopTradeExecutor;
 const tradeExecutor = async (clobClient) => {
-    logger_1.default.success(`Trade executor ready for ${USER_ADDRESSES.length} trader(s)`);
+    logger_1.default.success(`Trade executor ready for ${LEADER_ADDRESSES.length} leader(s)`);
     logger_1.default.info('Trade aggregation depends on per-trader settings (default: disabled)');
     let lastCheck = Date.now();
     while (isRunning) {
@@ -122,10 +122,10 @@ const tradeExecutor = async (clobClient) => {
         if (trades.length === 0 && Date.now() - lastCheck > 300) {
             const bufferedCount = aggregationManager.size();
             if (bufferedCount > 0) {
-                logger_1.default.waiting(USER_ADDRESSES.length, `${bufferedCount} trade group(s) pending`);
+                logger_1.default.waiting(LEADER_ADDRESSES.length, `${bufferedCount} trade group(s) pending`);
             }
             else {
-                logger_1.default.waiting(USER_ADDRESSES.length);
+                logger_1.default.waiting(LEADER_ADDRESSES.length);
             }
             lastCheck = Date.now();
         }

@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserPositionModel = exports.getUserActivityModel = void 0;
+exports.getUserPositionModel = exports.getUserActivityModel = exports.getOnChainCursorModel = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
 const positionSchema = new mongoose_1.Schema({
     _id: {
@@ -74,6 +74,7 @@ const activitySchema = new mongoose_1.Schema({
         auto: true,
     },
     proxyWallet: { type: String, required: false },
+    eventId: { type: String, required: false, index: true, unique: true, sparse: true },
     timestamp: { type: Number, required: false },
     conditionId: { type: String, required: false },
     type: { type: String, required: false },
@@ -96,7 +97,15 @@ const activitySchema = new mongoose_1.Schema({
     profileImageOptimized: { type: String, required: false },
     bot: { type: Boolean, required: false },
     botExcutedTime: { type: Number, required: false },
+    exchangeVersion: { type: String, required: false },
+    exchangeType: { type: String, required: false },
+    blockNumber: { type: Number, required: false },
+    logIndex: { type: Number, required: false },
 });
+const onChainCursorSchema = new mongoose_1.Schema({
+    _id: { type: String, required: true },
+    blockNumber: { type: Number, required: true },
+}, { timestamps: true });
 const getUserPositionModel = (walletAddress) => {
     const collectionName = `user_positions_${walletAddress}`;
     return mongoose_1.default.model(collectionName, positionSchema, collectionName);
@@ -107,3 +116,6 @@ const getUserActivityModel = (walletAddress) => {
     return mongoose_1.default.model(collectionName, activitySchema, collectionName);
 };
 exports.getUserActivityModel = getUserActivityModel;
+const getOnChainCursorModel = () => mongoose_1.default.models.onchain_signal_cursors ||
+    mongoose_1.default.model('onchain_signal_cursors', onChainCursorSchema, 'onchain_signal_cursors');
+exports.getOnChainCursorModel = getOnChainCursorModel;

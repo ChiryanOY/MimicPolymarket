@@ -12,11 +12,11 @@ import {
 import { TraderTaskQueue } from './tradeExecutorModules/queue';
 import { AggregatedTrade, TradeWithUser } from './tradeExecutorModules/types';
 
-const USER_ADDRESSES = ENV.USER_ADDRESSES;
+const LEADER_ADDRESSES = ENV.LEADER_ADDRESSES;
 const MIMIC_STRATEGY_CONFIG = ENV.MIMIC_STRATEGY_CONFIG;
 const TRADER_STRATEGIES_MAP = ENV.TRADER_STRATEGIES_MAP;
 
-const userActivityModels = createUserActivityModels(USER_ADDRESSES);
+const userActivityModels = createUserActivityModels(LEADER_ADDRESSES);
 const aggregationManager = new TradeAggregationManager(
     MIMIC_STRATEGY_CONFIG,
     TRADER_STRATEGIES_MAP
@@ -104,7 +104,7 @@ export const stopTradeExecutor = () => {
 };
 
 const tradeExecutor = async (clobClient: ClobClient) => {
-    Logger.success(`Trade executor ready for ${USER_ADDRESSES.length} trader(s)`);
+    Logger.success(`Trade executor ready for ${LEADER_ADDRESSES.length} leader(s)`);
     Logger.info('Trade aggregation depends on per-trader settings (default: disabled)');
 
     let lastCheck = Date.now();
@@ -165,9 +165,9 @@ const tradeExecutor = async (clobClient: ClobClient) => {
         if (trades.length === 0 && Date.now() - lastCheck > 300) {
             const bufferedCount = aggregationManager.size();
             if (bufferedCount > 0) {
-                Logger.waiting(USER_ADDRESSES.length, `${bufferedCount} trade group(s) pending`);
+                Logger.waiting(LEADER_ADDRESSES.length, `${bufferedCount} trade group(s) pending`);
             } else {
-                Logger.waiting(USER_ADDRESSES.length);
+                Logger.waiting(LEADER_ADDRESSES.length);
             }
             lastCheck = Date.now();
         }

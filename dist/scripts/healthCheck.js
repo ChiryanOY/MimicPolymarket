@@ -108,11 +108,12 @@ function printConfiguration() {
     console.log(`${colors.cyan}📊 Configuration Summary:${colors.reset}\n`);
     console.log(`   Wallet Mode: ${env_1.ENV.WALLET_MODE}`);
     console.log(`   Trading Wallet: ${env_1.ENV.TRADING_WALLET.slice(0, 6)}...${env_1.ENV.TRADING_WALLET.slice(-4)}`);
-    console.log(`   Tracking ${env_1.ENV.USER_ADDRESSES.length} trader(s):`);
-    env_1.ENV.USER_ADDRESSES.forEach((addr, idx) => {
+    console.log(`   Tracking ${env_1.ENV.LEADER_ADDRESSES.length} leader(s) on-chain:`);
+    env_1.ENV.LEADER_ADDRESSES.forEach((addr, idx) => {
         console.log(`      ${idx + 1}. ${addr.slice(0, 6)}...${addr.slice(-4)}`);
     });
-    console.log(`   Check Interval: ${env_1.ENV.FETCH_INTERVAL}s`);
+    console.log(`   Confirmations: ${env_1.ENV.CHAIN_CONFIRMATIONS}`);
+    console.log(`   Backfill Interval: ${env_1.ENV.ONCHAIN_BACKFILL_INTERVAL_MS}ms`);
     console.log('');
 }
 const main = async () => {

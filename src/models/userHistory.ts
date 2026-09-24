@@ -40,6 +40,7 @@ const activitySchema = new Schema({
         auto: true,
     },
     proxyWallet: { type: String, required: false },
+    eventId: { type: String, required: false, index: true, unique: true, sparse: true },
     timestamp: { type: Number, required: false },
     conditionId: { type: String, required: false },
     type: { type: String, required: false },
@@ -62,7 +63,19 @@ const activitySchema = new Schema({
     profileImageOptimized: { type: String, required: false },
     bot: { type: Boolean, required: false },
     botExcutedTime: { type: Number, required: false },
+    exchangeVersion: { type: String, required: false },
+    exchangeType: { type: String, required: false },
+    blockNumber: { type: Number, required: false },
+    logIndex: { type: Number, required: false },
 });
+
+const onChainCursorSchema = new Schema(
+    {
+        _id: { type: String, required: true },
+        blockNumber: { type: Number, required: true },
+    },
+    { timestamps: true }
+);
 
 const getUserPositionModel = (walletAddress: string) => {
     const collectionName = `user_positions_${walletAddress}`;
@@ -74,4 +87,8 @@ const getUserActivityModel = (walletAddress: string) => {
     return mongoose.model(collectionName, activitySchema, collectionName);
 };
 
-export { getUserActivityModel, getUserPositionModel };
+const getOnChainCursorModel = () =>
+    mongoose.models.onchain_signal_cursors ||
+    mongoose.model('onchain_signal_cursors', onChainCursorSchema, 'onchain_signal_cursors');
+
+export { getOnChainCursorModel, getUserActivityModel, getUserPositionModel };

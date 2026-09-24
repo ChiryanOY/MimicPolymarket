@@ -93,11 +93,12 @@ function printConfiguration() {
     console.log(
         `   Trading Wallet: ${ENV.TRADING_WALLET.slice(0, 6)}...${ENV.TRADING_WALLET.slice(-4)}`
     );
-    console.log(`   Tracking ${ENV.USER_ADDRESSES.length} trader(s):`);
-    ENV.USER_ADDRESSES.forEach((addr, idx) => {
+    console.log(`   Tracking ${ENV.LEADER_ADDRESSES.length} leader(s) on-chain:`);
+    ENV.LEADER_ADDRESSES.forEach((addr, idx) => {
         console.log(`      ${idx + 1}. ${addr.slice(0, 6)}...${addr.slice(-4)}`);
     });
-    console.log(`   Check Interval: ${ENV.FETCH_INTERVAL}s`);
+    console.log(`   Confirmations: ${ENV.CHAIN_CONFIRMATIONS}`);
+    console.log(`   Backfill Interval: ${ENV.ONCHAIN_BACKFILL_INTERVAL_MS}ms`);
     console.log('');
 }
 
