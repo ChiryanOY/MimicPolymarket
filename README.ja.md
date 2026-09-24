@@ -164,16 +164,6 @@ docker-compose logs -f bot
 3. [Predictfolio](https://predictfolio.com) を使用して、詳細な統計情報を相互検証します。
 4. 選択したアドレスを `LEADER_ADDRESSES` に挿入し、エンジンに引き継ぎます。
 
-## Star History
-
-<a href="https://star-history.com/#ChiryanOY/MimicPolymarket&Date">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=ChiryanOY/MimicPolymarket&type=Date&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=ChiryanOY/MimicPolymarket&type=Date" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=ChiryanOY/MimicPolymarket&type=Date" />
-  </picture>
-</a>
-
 ## ライセンス
 ISC License - 詳細は [LICENSE](LICENSE) を参照してください。
 

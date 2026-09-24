@@ -164,16 +164,6 @@ docker-compose logs -f bot
 3. Проведите перекрестную проверку глубокой статистики с помощью [Predictfolio](https://predictfolio.com).
 4. Вставьте выбранные адреса в `LEADER_ADDRESSES` и позвольте механизму взять управление на себя.
 
-## Star History
-
-<a href="https://star-history.com/#ChiryanOY/MimicPolymarket&Date">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=ChiryanOY/MimicPolymarket&type=Date&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=ChiryanOY/MimicPolymarket&type=Date" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=ChiryanOY/MimicPolymarket&type=Date" />
-  </picture>
-</a>
-
 ## Лицензия
 ISC License - Подробности см. в [LICENSE](LICENSE).
 

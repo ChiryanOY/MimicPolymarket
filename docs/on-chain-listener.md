@@ -9,6 +9,11 @@ MimicPolymarket v2 no longer polls the Polymarket Data API for leader activity. 
 5. A deterministic `transactionHash:logIndex` event ID is upserted into the existing per-leader MongoDB execution queue.
 6. `tradeExecutor` applies the existing aggregation, risk, and order-routing pipeline.
 
+`TRADER_STRATEGIES` is keyed by the same wallet addresses listed in `LEADER_ADDRESSES`.
+When a fill reaches the executor, its maker address selects the per-leader override for
+`mimicSize`, order and position limits, slippage, and aggregation settings. Leaders without
+an override use the global mimic strategy.
+
 ## Gap recovery
 
 WSS is the low-latency path, not the source of recovery truth. A MongoDB cursor records the last completely scanned confirmed block. Every `ONCHAIN_BACKFILL_INTERVAL_MS`, the HTTP RPC scans from that cursor through the current confirmed head. The cursor advances only after every log in a chunk has been decoded and durably stored.

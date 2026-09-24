@@ -78,7 +78,7 @@ The runtime environment relies on the `.env` file (see [`/.env.docker.example`](
 
 ### Required Environment Variables
 
-- `LEADER_ADDRESSES`: Target wallets to monitor on-chain (comma-separated or JSON array). `USER_ADDRESSES` is accepted temporarily as a deprecated alias.
+- `LEADER_ADDRESSES`: Target wallets to monitor on-chain (comma-separated or JSON array).
 - `TRADING_WALLET`: The execution address (EOA/Safe for `LEGACY`; derived Deposit Wallet for `DEPOSIT`).
 - `WALLET_MODE`: Routing mode (`LEGACY` or `DEPOSIT`).
 - `PRIVATE_KEY`: Private key of the Owner or Signer.
@@ -121,6 +121,8 @@ Fine-grained control is achieved via `TRADER_STRATEGIES`, which must be a valid 
   }
 ]
 ```
+Each `address` must match an entry in `LEADER_ADDRESSES`. On-chain fills use that leader's override for sizing, order/position limits, slippage, and aggregation; leaders without an override use the global strategy.
+
 The default strategy utilizes a `PERCENTAGE` based proportional scaling algorithm.
 
 ### 📖 Deep Dive: Trading & Execution Mechanics
@@ -170,16 +172,6 @@ docker-compose logs -f bot
 2. Filter for traders with positive P&L, >55% win rate, and recent activity.
 3. Cross-validate deep stats using [Predictfolio](https://predictfolio.com).
 4. Inject the selected addresses into `LEADER_ADDRESSES` and let the engine take over.
-
-## Star History
-
-<a href="https://star-history.com/#ChiryanOY/MimicPolymarket&Date">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=ChiryanOY/MimicPolymarket&type=Date&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=ChiryanOY/MimicPolymarket&type=Date" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=ChiryanOY/MimicPolymarket&type=Date" />
-  </picture>
-</a>
 
 ## License
 ISC License - See [LICENSE](LICENSE) for details.

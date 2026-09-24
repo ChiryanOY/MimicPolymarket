@@ -164,16 +164,6 @@ docker-compose logs -f bot
 3. [Predictfolio](https://predictfolio.com)를 사용하여 심층 통계를 교차 검증합니다.
 4. 선택한 주소를 `LEADER_ADDRESSES`에 주입하고 엔진이 인계받도록 합니다.
 
-## Star History
-
-<a href="https://star-history.com/#ChiryanOY/MimicPolymarket&Date">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=ChiryanOY/MimicPolymarket&type=Date&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=ChiryanOY/MimicPolymarket&type=Date" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=ChiryanOY/MimicPolymarket&type=Date" />
-  </picture>
-</a>
-
 ## 라이선스
 ISC License - 자세한 내용은 [LICENSE](LICENSE)를 참조하세요.
 

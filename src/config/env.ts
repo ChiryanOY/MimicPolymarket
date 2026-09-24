@@ -11,9 +11,6 @@ const isValidEthereumAddress = (address: string): boolean => {
     return /^0x[a-fA-F0-9]{40}$/.test(address);
 };
 
-const getLeaderAddressesInput = (): string | undefined =>
-    process.env.LEADER_ADDRESSES || process.env.USER_ADDRESSES;
-
 /**
  * Validate required environment variables
  */
@@ -29,7 +26,7 @@ const validateRequiredEnv = (): void => {
     ];
 
     const missing: string[] = [];
-    if (!getLeaderAddressesInput()) {
+    if (!process.env.LEADER_ADDRESSES) {
         missing.push('LEADER_ADDRESSES');
     }
     for (const key of required) {
@@ -190,8 +187,7 @@ validateNumericConfig();
 validateUrls();
 
 // Parse LEADER_ADDRESSES: supports both comma-separated string and JSON array.
-// USER_ADDRESSES remains a one-release compatibility alias.
-const parseUserAddresses = (input: string): string[] => {
+const parseLeaderAddresses = (input: string): string[] => {
     const trimmed = input.trim();
     // Check if it's JSON array format
     if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
@@ -337,12 +333,10 @@ const parseClobBuilderConfig = (): { builderCode: string } | null => {
 
 const resolveWalletMode = (): WalletMode => process.env.WALLET_MODE!.toUpperCase() as WalletMode;
 
-const leaderAddresses = parseUserAddresses(getLeaderAddressesInput() as string);
+const leaderAddresses = parseLeaderAddresses(process.env.LEADER_ADDRESSES as string);
 
 export const ENV = {
     LEADER_ADDRESSES: leaderAddresses,
-    // Deprecated compatibility alias for integrations importing the old field.
-    USER_ADDRESSES: leaderAddresses,
     WALLET_MODE: resolveWalletMode(),
     TRADING_WALLET: process.env.TRADING_WALLET as string,
     PRIVATE_KEY: process.env.PRIVATE_KEY as string,

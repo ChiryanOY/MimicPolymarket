@@ -78,7 +78,7 @@ npm start
 
 ### 必填环境变量
 
-- `LEADER_ADDRESSES`: 链上监听的目标钱包，支持逗号分隔或 JSON 数组；`USER_ADDRESSES` 仅作为临时兼容别名。
+- `LEADER_ADDRESSES`: 链上监听的目标钱包，支持逗号分隔或 JSON 数组。
 - `TRADING_WALLET`: 执行地址（`LEGACY` 下为 EOA/Safe；`DEPOSIT` 下必须为派生出的 Deposit Wallet）。
 - `WALLET_MODE`: 路由模式（`LEGACY` 或 `DEPOSIT`）。
 - `PRIVATE_KEY`: Owner 或 Signer 的私钥。
@@ -121,6 +121,8 @@ v2 首次启动只记录当前已确认区块，不回放历史 Leader 交易；
   }
 ]
 ```
+每个 `address` 必须与 `LEADER_ADDRESSES` 中的地址一致。链上成交会使用该 Leader 的仓位比例、订单/持仓上限、滑点及聚合覆盖配置；未单独配置的 Leader 使用全局策略。
+
 默认采用 `PERCENTAGE` 比例跟单算法。
 
 ### 📖 交易跟单机制详解 (Trading & Execution Mechanics)
@@ -170,16 +172,6 @@ docker-compose logs -f bot
 2. 筛选 P&L 为正、胜率 >55% 且近期活跃的“聪明钱”。
 3. 借助 [Predictfolio](https://predictfolio.com) 进行深度数据交叉验证。
 4. 填入 `LEADER_ADDRESSES`，让引擎接管执行。
-
-## Star History
-
-<a href="https://star-history.com/#ChiryanOY/MimicPolymarket&Date">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=ChiryanOY/MimicPolymarket&type=Date&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=ChiryanOY/MimicPolymarket&type=Date" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=ChiryanOY/MimicPolymarket&type=Date" />
-  </picture>
-</a>
 
 ## 许可证
 ISC License - 详见 [LICENSE](LICENSE) 文件。
